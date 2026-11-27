@@ -41,17 +41,6 @@ st.markdown(pwa_code, unsafe_allow_html=True)
 # ==============================================================================
 # 📊 BANCO DE CRITÉRIOS AGRONÔMICOS (EDITE AQUI COM SEUS DADOS DE CAMPO!)
 # ==============================================================================
-# Estrutura:
-# "Tipo de Aplicação": {
-#     "Estrato": {
-#         "gotas_bom": X,   -> Mínimo de gotas/cm² para ser ADEQUADO
-#         "gotas_aten": Y,  -> Mínimo de gotas/cm² para ser ATENÇÃO (abaixo disso = RUIM)
-#         "cob_bom": A,     -> Mínimo de cobertura (%) para ser ADEQUADO
-#         "cob_aten": B     -> Mínimo de cobertura (%) para ser ATENÇÃO
-#     }
-# }
-# ==============================================================================
-
 CRITERIOS_AGRONOMICOS = {
     "Herbicida de Contato": {
         "Terço Superior": {"gotas_bom": 40, "gotas_aten": 25, "cob_bom": 4.0, "cob_aten": 2.0},
@@ -80,47 +69,35 @@ CRITERIOS_AGRONOMICOS = {
 }
 
 # ==============================================================================
-# 🎨 FUNÇÃO DE ILUSTRAÇÃO DA PLANTA (SVG DINÂMICO)
+# 🎨 FUNÇÃO DE ILUSTRAÇÃO DA PLANTA (SVG CORRIGIDO)
 # ==============================================================================
 def desenhar_planta_svg(cultura):
     if cultura == "Soja":
         planta_elementos = """
-        <!-- Caule -->
         <path d="M150,360 Q145,220 150,70" stroke="#2e7d32" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <!-- Folhas Terço Superior -->
         <ellipse cx="120" cy="95" rx="28" ry="14" transform="rotate(-25 120 95)" fill="#66bb6a"/>
         <ellipse cx="180" cy="90" rx="28" ry="14" transform="rotate(20 180 90)" fill="#66bb6a"/>
         <ellipse cx="150" cy="65" rx="16" ry="24" fill="#81c784"/>
-        <!-- Folhas Terço Médio -->
         <ellipse cx="105" cy="185" rx="36" ry="18" transform="rotate(-15 105 185)" fill="#43a047"/>
         <ellipse cx="195" cy="180" rx="36" ry="18" transform="rotate(15 195 180)" fill="#43a047"/>
-        <!-- Folhas Terço Inferior -->
         <ellipse cx="100" cy="280" rx="40" ry="20" transform="rotate(-10 100 280)" fill="#2e7d32"/>
         <ellipse cx="200" cy="275" rx="40" ry="20" transform="rotate(10 200 275)" fill="#2e7d32"/>
         """
     elif cultura == "Milho":
         planta_elementos = """
-        <!-- Colmo -->
         <line x1="150" y1="360" x2="150" y2="65" stroke="#388e3c" stroke-width="8" stroke-linecap="round"/>
-        <!-- Pendão -->
         <path d="M150,65 L135,40 M150,65 L150,35 M150,65 L165,40" stroke="#fbc02d" stroke-width="3"/>
-        <!-- Folhas arqueadas Superior -->
         <path d="M150,105 Q100,80 75,115 Q115,105 150,115" fill="#66bb6a"/>
         <path d="M150,100 Q200,75 225,110 Q185,100 150,110" fill="#66bb6a"/>
-        <!-- Folhas arqueadas Médio -->
         <path d="M150,190 Q85,160 55,205 Q105,190 150,200" fill="#43a047"/>
         <path d="M150,185 Q215,155 245,200 Q195,185 150,195" fill="#43a047"/>
-        <!-- Folhas arqueadas Inferior -->
         <path d="M150,280 Q80,255 50,300 Q105,280 150,290" fill="#2e7d32"/>
         <path d="M150,275 Q220,250 250,295 Q195,275 150,285" fill="#2e7d32"/>
         """
     else:  # Trigo
         planta_elementos = """
-        <!-- Colmo fino -->
         <line x1="150" y1="360" x2="150" y2="95" stroke="#558b2f" stroke-width="5"/>
-        <!-- Espiga -->
         <rect x="142" y="40" width="16" height="55" rx="8" fill="#fdd835" stroke="#f9a825" stroke-width="2"/>
-        <!-- Folhas estreitas -->
         <path d="M150,115 Q105,100 85,130" stroke="#7cb342" stroke-width="6" fill="none" stroke-linecap="round"/>
         <path d="M150,190 Q195,175 215,205" stroke="#558b2f" stroke-width="6" fill="none" stroke-linecap="round"/>
         <path d="M150,275 Q100,260 80,295" stroke="#33691e" stroke-width="6" fill="none" stroke-linecap="round"/>
@@ -129,30 +106,24 @@ def desenhar_planta_svg(cultura):
     svg_completo = f"""
     <div style="display: flex; justify-content: center; background-color: #f8faf8; border-radius: 14px; padding: 15px; border: 1px solid #dcedc8;">
     <svg width="430" height="390" viewBox="0 0 430 390" xmlns="http://www.w3.org/2000/svg">
-        <!-- Solo -->
         <ellipse cx="150" cy="365" rx="95" ry="12" fill="#8d6e63" opacity="0.5"/>
         {planta_elementos}
         
-        <!-- Linhas indicativas e Rótulos dos Estratos -->
-        <!-- 1. Terço Superior -->
         <line x1="185" y1="90" x2="275" y2="70" stroke="#1b5e20" stroke-width="2" stroke-dasharray="4"/>
         <circle cx="185" cy="90" r="5" fill="#1b5e20"/>
         <rect x="275" y="52" width="145" height="34" rx="6" fill="#e8f5e9" stroke="#2e7d32"/>
         <text x="347" y="74" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">1. Terço Superior</text>
 
-        <!-- 2. Terço Médio -->
         <line x1="205" y1="180" x2="275" y2="160" stroke="#1b5e20" stroke-width="2" stroke-dasharray="4"/>
         <circle cx="205" cy="180" r="5" fill="#1b5e20"/>
         <rect x="275" y="142" width="145" height="34" rx="6" fill="#e8f5e9" stroke="#2e7d32"/>
         <text x="347" y="164" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">2. Terço Médio</text>
 
-        <!-- 3. Terço Inferior -->
         <line x1="205" y1="275" x2="275" y2="250" stroke="#1b5e20" stroke-width="2" stroke-dasharray="4"/>
         <circle cx="205" cy="275" r="5" fill="#1b5e20"/>
         <rect x="275" y="232" width="145" height="34" rx="6" fill="#e8f5e9" stroke="#2e7d32"/>
         <text x="347" y="254" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">3. Terço Inferior</text>
 
-        <!-- 4. Face Abaxial (Verso da folha) -->
         <line x1="115" y1="195" x2="275" y2="335" stroke="#0277bd" stroke-width="2" stroke-dasharray="4"/>
         <circle cx="115" cy="195" r="5" fill="#0277bd"/>
         <rect x="275" y="317" width="145" height="34" rx="6" fill="#e1f5fe" stroke="#0288d1"/>
@@ -164,7 +135,7 @@ def desenhar_planta_svg(cultura):
 
 
 # ==============================================================================
-# 💧 MOTOR DE VISÃO COMPUTACIONAL (CANAL VERDE FIXO + OTSU INDIVIDUAL)
+# 💧 MOTOR DE VISÃO COMPUTACIONAL
 # ==============================================================================
 def analisar_cartao(uploaded_file, area_fisica_cm2, offset_otsu=0, usar_teto=True, diametro_teto_max=800.0):
     image_pil = Image.open(uploaded_file).convert('RGB')
@@ -173,10 +144,8 @@ def analisar_cartao(uploaded_file, area_fisica_cm2, offset_otsu=0, usar_teto=Tru
     altura_px, largura_px, _ = img_bgr.shape
     total_pixels_img = largura_px * altura_px
 
-    # Canal Verde Fixo (índice 1 no BGR)
     img_verde = img_bgr[:, :, 1]
 
-    # Limiar de Otsu calculado individualmente para cada foto
     limiar_otsu, _ = cv2.threshold(img_verde, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     limiar_final = int(max(0, min(255, limiar_otsu + offset_otsu)))
     _, img_binaria = cv2.threshold(img_verde, limiar_final, 255, cv2.THRESH_BINARY_INV)
@@ -244,8 +213,6 @@ def analisar_cartao(uploaded_file, area_fisica_cm2, offset_otsu=0, usar_teto=Tru
 
 def classificar_estrato(aplicacao, estrato, densidade_media, cobertura_media):
     regras = CRITERIOS_AGRONOMICOS[aplicacao][estrato]
-    
-    # Critério combinado: avalia densidade (gotas/cm²) e cobertura (%)
     if densidade_media >= regras["gotas_bom"] and cobertura_media >= regras["cob_bom"]:
         return "Adequado", "🟢", "success"
     elif densidade_media >= regras["gotas_aten"] and cobertura_media >= regras["cob_aten"]:
@@ -264,7 +231,6 @@ if "cultura" not in st.session_state:
 if "aplicacao" not in st.session_state:
     st.session_state.aplicacao = "Fungicida"
 
-# Barra Lateral: Calibração Física do Papel
 st.sidebar.header("📏 Configuração do Papel")
 tipo_papel = st.sidebar.selectbox(
     "Tamanho do Papel Hidrossensível",
@@ -291,10 +257,8 @@ if st.sidebar.button("🔄 Reiniciar Diagnóstico"):
     st.session_state.etapa = 1
     st.rerun()
 
-# Cabeçalho Principal
 st.title("🌱 Spray Check — Diagnóstico de Pulverização")
 
-# Barra de Progresso do Passo a Passo
 progresso_map = {1: 0.33, 2: 0.66, 3: 1.0}
 st.progress(progresso_map[st.session_state.etapa])
 
@@ -328,7 +292,7 @@ if st.session_state.etapa == 1:
 elif st.session_state.etapa == 2:
     st.info(f"Cultura selecionada: **{st.session_state.cultura}**")
     st.subheader("Passo 2 de 3 — Qual é o alvo / tipo de aplicação?")
-    st.write("O tipo de produto define a exigência mínima de cobertura e gotas por $\\text{cm}^2$:")
+    st.write("O tipo de produto define a exigência mínima de cobertura e gotas por cm²:")
 
     col_a, col_b = st.columns(2)
     with col_a:
@@ -357,7 +321,7 @@ elif st.session_state.etapa == 2:
         st.rerun()
 
 # ==============================================================================
-# PASSO 3: LAYOUT DA PLANTA + UPLOADS POR ESTRATO + DIAGNÓSTICO FINAL
+# PASSO 3: LAYOUT DA PLANTA + UPLOADS + DIAGNÓSTICO
 # ==============================================================================
 elif st.session_state.etapa == 3:
     col_topo1, col_topo2 = st.columns([4, 1])
@@ -369,12 +333,14 @@ elif st.session_state.etapa == 3:
             st.rerun()
 
     st.subheader(f"Passo 3 de 3 — Anexe os cartões nos pontos amostrados ({st.session_state.cultura})")
-    st.caption("Você pode anexar uma ou mais fotos (repetições) em cada estrato. Se algum ponto não foi coletado (ex: Face Abaxial), basta deixar em branco.")
+    st.caption("Você pode anexar uma ou mais fotos (repetições) em cada estrato. Se algum ponto não foi coletado, basta deixar em branco.")
 
     col_planta, col_uploads = st.columns([1.1, 1.3])
 
     with col_planta:
-        st.markdown(desenhar_planta_svg(st.session_state.cultura), unsafe_allow_html=True)
+        # Renderização correta do SVG com st.markdown e unsafe_allow_html
+        svg_html = desenhar_planta_svg(st.session_state.cultura)
+        st.markdown(svg_html, unsafe_allow_html=True)
 
     with col_uploads:
         fotos_superior = st.file_uploader("1️⃣ Terço Superior", type=["jpg", "jpeg", "png"], accept_multiple_files=True, key="up_sup")
@@ -414,7 +380,6 @@ elif st.session_state.etapa == 3:
                     )
                     resultados_estrato.append(res_foto)
 
-                # Médias do estrato (caso haja mais de 1 cartão por terço)
                 densidade_media = np.mean([r["densidade_cm2"] for r in resultados_estrato])
                 cobertura_media = np.mean([r["cobertura_pct"] for r in resultados_estrato])
                 dmv_medio       = np.mean([r["dmv"] for r in resultados_estrato])
@@ -429,7 +394,6 @@ elif st.session_state.etapa == 3:
                     cobertura_media
                 )
 
-                # Exibição visual no estilo solicitado
                 mensagem_principal = (
                     f"{icone} **{nome_estrato}: {status_texto}** — "
                     f"Cobertura de **{cobertura_media:.2f}%** com **{densidade_media:.1f} gotas/cm²** "
@@ -443,7 +407,6 @@ elif st.session_state.etapa == 3:
                 else:
                     st.error(mensagem_principal)
 
-                # Salva cada foto individualmente na planilha para rastreabilidade completa
                 for r in resultados_estrato:
                     registros_excel.append({
                         "Cultura": st.session_state.cultura,
@@ -462,7 +425,6 @@ elif st.session_state.etapa == 3:
                         "Vol. Escorrimento >600µm (%)": round(r["escorrimento_pct"], 2)
                     })
 
-            # Exportação para Excel
             if registros_excel:
                 st.markdown("---")
                 df_diag = pd.DataFrame(registros_excel)
