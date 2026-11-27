@@ -5,6 +5,7 @@ import math
 import pandas as pd
 from PIL import Image
 import io
+import base64
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
@@ -69,7 +70,7 @@ CRITERIOS_AGRONOMICOS = {
 }
 
 # ==============================================================================
-# 🎨 FUNÇÃO DE ILUSTRAÇÃO DA PLANTA (SVG CORRIGIDO)
+# 🎨 FUNÇÃO DE ILUSTRAÇÃO DA PLANTA (CONVERTIDA PARA BASE64 / st.image)
 # ==============================================================================
 def desenhar_planta_svg(cultura):
     if cultura == "Soja":
@@ -103,9 +104,8 @@ def desenhar_planta_svg(cultura):
         <path d="M150,275 Q100,260 80,295" stroke="#33691e" stroke-width="6" fill="none" stroke-linecap="round"/>
         """
 
-    svg_completo = f"""
-    <div style="display: flex; justify-content: center; background-color: #f8faf8; border-radius: 14px; padding: 15px; border: 1px solid #dcedc8;">
-    <svg width="430" height="390" viewBox="0 0 430 390" xmlns="http://www.w3.org/2000/svg">
+    svg_conteudo = f"""
+    <svg width="430" height="390" viewBox="0 0 430 390" xmlns="http://www.w3.org/2000/svg" style="background-color: #f8faf8; border-radius: 14px;">
         <ellipse cx="150" cy="365" rx="95" ry="12" fill="#8d6e63" opacity="0.5"/>
         {planta_elementos}
         
@@ -129,9 +129,10 @@ def desenhar_planta_svg(cultura):
         <rect x="275" y="317" width="145" height="34" rx="6" fill="#e1f5fe" stroke="#0288d1"/>
         <text x="347" y="339" font-family="sans-serif" font-size="13" font-weight="bold" fill="#01579b" text-anchor="middle">4. Face Abaxial</text>
     </svg>
-    </div>
     """
-    return svg_completo
+    
+    b64 = base64.b64encode(svg_conteudo.encode('utf-8')).decode('utf-8')
+    return f"data:image/svg+xml;base64,{b64}"
 
 
 # ==============================================================================
@@ -338,9 +339,9 @@ elif st.session_state.etapa == 3:
     col_planta, col_uploads = st.columns([1.1, 1.3])
 
     with col_planta:
-        # Renderização correta do SVG com st.markdown e unsafe_allow_html
-        svg_html = desenhar_planta_svg(st.session_state.cultura)
-        st.markdown(svg_html, unsafe_allow_html=True)
+        # Renderização via st.image com base64 (limpa e sem escapar texto)
+        url_svg = desenhar_planta_svg(st.session_state.cultura)
+        st.image(url_svg, use_container_width=True)
 
     with col_uploads:
         fotos_superior = st.file_uploader("1️⃣ Terço Superior", type=["jpg", "jpeg", "png"], accept_multiple_files=True, key="up_sup")
